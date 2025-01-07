@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Редактировать контакт</h2>
+<form method="POST" enctype="multipart/form-data">
+    <label for="name">Имя</label>
+    <input type="text" id="name" name="name" value="{{ contact['name'] }}" required>
+
+    <label for="surname">Фамилия</label>
+    <input type="text" id="surname" name="surname" value="{{ contact['surname'] }}" required>
+
+    <label for="phone">Номер телефона</label>
+    <input type="tel" id="phone" name="phone" value="{{ contact['phone'] }}" required>
+
+    <label for="photo">Фото (оставьте пустым, чтобы не менять)</label>
+    <input type="file" id="photo" name="photo" accept="image/*">
+
+    <button type="submit">Сохранить изменения</button>
+</form>
+{% if message %}
+    <p class="error">{{ message }}</p>
+{% endif %}
+<a href="{{ url_for('user_dashboard') }}" class="btn">Отмена</a>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Удаление записи</h2>
+<p>Вы действительно хотите удалить запись?</p>
+<form method="POST">
+    <button type="submit">Да</button>
+    <a href="{{ url_for('user_dashboard') }}" class="btn">Нет</a>
+</form>
+{% endblock %}

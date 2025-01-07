@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Панель администратора</h2>
+
+<h3>Список пользователей</h3>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя пользователя</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user['id'] }}</td>
+                <td>{{ user['username'] }}</td>
+                <td>
+                    {% if session['user_id'] != user['id'] %}
+                        <form method="POST" action="{{ url_for('delete_user', id=user['id']) }}">
+                            <button type="submit" class="delete-button">Удалить</button>
+                        </form>
+                    {% else %}
+                        <span style="color: gray;">Нельзя удалить</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Добавить контакт</h2>
+<form method="POST" enctype="multipart/form-data">
+    <label for="name">Имя</label>
+    <input type="text" id="name" name="name" required>
+    
+    <label for="surname">Фамилия</label>
+    <input type="text" id="surname" name="surname" required>
+    
+    <label for="phone">Номер телефона</label>
+    <input type="tel" id="phone" name="phone" required>
+    
+    <label for="photo">Фото</label>
+    <input type="file" id="photo" name="photo" accept="image/*" required>
+    
+    <button type="submit">Добавить</button>
+</form>
+{% if message %}
+    <p class="error">{{ message }}</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=content_copy" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}" defer></script>
+    <title>Контакты</title>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="search-bar">
+                <form action="{{ url_for('search_contacts') }}" method="get">
+                    <input type="text" name="query" placeholder="Поиск контактов">
+                    <button type="submit">Найти</button>
+                </form>
+            </div>
+            {% if session.get('user_id') %}
+                <nav>
+                    <a href="{{ url_for('user_dashboard') }}">Мои контакты</a>
+                    {% if session.get('is_admin') %}
+                        <a href="{{ url_for('admin_dashboard') }}">Панель администратора</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}">Выход</a>
+                </nav>
+            {% endif %}
+        </div>
+    </header>
+    <main class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <div class="container">
+            <p>© 2025 Контакты. Все права защищены.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButtons = document.querySelectorAll('.copy-button');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const phone = this.dataset.phone;
+                    navigator.clipboard.writeText(phone)
+                        .then(() => {
+                            //alert('Номер телефона скопирован: ' + phone);
+                        })
+                        .catch(err => {
+                            console.error('Не удалось скопировать номер: ', err);
+                        });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
