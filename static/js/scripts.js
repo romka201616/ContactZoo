@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 phoneField.classList.remove("error-border");
             }
 
-            if (!photoField.value) { // Проверка наличия выбранного файла
+            if (!photoField.value) {
                 isValid = false;
                 photoField.classList.add("error-border");
             } else {

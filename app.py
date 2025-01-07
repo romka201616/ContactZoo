@@ -9,7 +9,6 @@ app.secret_key = 'секретный_ключ'
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Функция для подключения к базе данных
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
@@ -23,11 +22,10 @@ def is_username_unique(username):
     conn.close()
     return result is None
 
-# Главная страница (вход/регистрация)
 @app.route('/', methods=['GET', 'POST'])
 def login_register():
     if request.method == "POST":
-        if "password_confirm" in request.form:  # Регистрация
+        if "password_confirm" in request.form:
             username = request.form["username"]
             password = request.form["password"]
             password_confirm = request.form["password_confirm"]
@@ -53,7 +51,7 @@ def login_register():
                 flash("Регистрация успешна! Войдите в систему.")
                 return redirect(url_for("login_register"))
 
-        else:  # Авторизация
+        else:
             username = request.form["username"]
             password = request.form["password"]
 
@@ -71,7 +69,6 @@ def login_register():
 
     return render_template("login_register.html")
 
-# Панель управления пользователя
 @app.route("/user")
 def user_dashboard():
     if "user_id" not in session:
@@ -86,7 +83,6 @@ def user_dashboard():
 
     return render_template("user_dashboard.html", contacts=contacts, username=username)
 
-# Панель администратора
 @app.route('/admin')
 def admin_dashboard():
     if 'user_id' not in session or not session.get('is_admin'):
@@ -96,7 +92,6 @@ def admin_dashboard():
     conn.close()
     return render_template('admin_dashboard.html', users=users)
 
-# Добавление контакта
 @app.route('/add', methods=['GET', 'POST'])
 def add_contact():
     if 'user_id' not in session:
@@ -141,7 +136,6 @@ def add_contact():
 
     return render_template('add_contact.html')
 
-# Редактирование контакта
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_contact(id):
     if 'user_id' not in session:
@@ -167,7 +161,7 @@ def edit_contact(id):
             conn.close()
             return redirect(url_for('edit_contact', id=id))
 
-        filename = contact['photo']  # По умолчанию оставляем старое фото
+        filename = contact['photo'] 
 
         if photo:
             filename = secure_filename(photo.filename)
@@ -192,7 +186,6 @@ def edit_contact(id):
 
     return render_template('edit_contact.html', contact=contact)
 
-# Удаление контакта
 @app.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete_contact(id):
     if 'user_id' not in session:
@@ -216,16 +209,14 @@ def delete_contact(id):
 
     return render_template('delete_confirm.html')
 
-# Удаление пользователя (только для администратора)
 @app.route('/delete_user/<int:id>', methods=['POST'])
 def delete_user(id):
     if 'user_id' not in session or not session.get('is_admin'):
         return redirect(url_for('login_register'))
 
     conn = get_db_connection()
-    if session['user_id'] != id: # Администратор не может удалить сам себя
+    if session['user_id'] != id:
         conn.execute('DELETE FROM users WHERE id = ?', (id,))
-        # Каскадное удаление контактов пользователя
         conn.execute('DELETE FROM contacts WHERE user_id = ?', (id,))
         conn.commit()
         flash('Пользователь удален')
@@ -234,7 +225,6 @@ def delete_user(id):
     conn.close()
     return redirect(url_for('admin_dashboard'))
 
-# Поиск контактов
 @app.route('/search')
 def search_contacts():
     if 'user_id' not in session:
@@ -253,14 +243,12 @@ def search_contacts():
     conn.close()
     return render_template('search_results.html', results=contacts, query=query)
 
-# Выход из системы
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login_register'))
 
 if __name__ == '__main__':
-    # Убедитесь, что папка для загрузок существует
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
     app.run(debug=True, port=8080)
