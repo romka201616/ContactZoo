@@ -11,21 +11,23 @@
 <body>
     <header>
         <div class="container">
-            <div class="search-bar">
-                <form action="{{ url_for('search_contacts') }}" method="get">
-                    <input type="text" name="query" placeholder="Поиск контактов">
-                    <button type="submit">Найти</button>
-                </form>
-            </div>
             {% if session.get('user_id') %}
-                <nav>
+                <div class="search-bar">
+                    <form action="{{ url_for('search_contacts') }}" method="get">
+                        <input type="text" name="query" placeholder="Поиск контактов">
+                        <button type="submit">Найти</button>
+                    </form>
+                </div>
+            {% endif %}
+            <nav>
+                {% if session.get('user_id') %}
                     <a href="{{ url_for('user_dashboard') }}">Мои контакты</a>
                     {% if session.get('is_admin') %}
                         <a href="{{ url_for('admin_dashboard') }}">Панель администратора</a>
                     {% endif %}
                     <a href="{{ url_for('logout') }}">Выход</a>
-                </nav>
-            {% endif %}
+                {% endif %}
+            </nav>
         </div>
     </header>
     <main class="container">
